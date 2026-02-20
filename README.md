@@ -2,8 +2,10 @@
 
 **Student:** NDEKWE Dieu Merci  
 **Theme:** Campus Life Planner  
-**🌐 Live App:** _[add your GitHub Pages URL here]_  
+**🌐 Live App**(Link): https://mndekwe-dot.github.io/Summative_FrontEnd/#home
 **📁 Repository:** [github.com/mndekwe-dot](https://github.com/mndekwe-dot)
+**📁 Tutorial Video:**(link): 
+
 
 ---
 

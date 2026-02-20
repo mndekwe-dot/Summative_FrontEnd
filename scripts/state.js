@@ -1,6 +1,6 @@
 import { loadRecords, saveRecords, loadSettings, saveSettings } from './storage.js';
 
-const DEFAULT_TAGS = ['Lecture', 'Assignment', 'Exam', 'Study', 'Project', 'Meeting', 'Lab', 'Other'];
+const DEFAULT_TAGS = ['Assignment', 'Exam', 'Study', 'Meeting', 'Other'];
 
 const DEFAULT_SETTINGS = {
   theme: 'light',
