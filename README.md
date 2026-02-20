@@ -302,7 +302,7 @@ All data is saved automatically on every change — no Save button needed.
 
 > **Rubric: Demo Video (2–3 min)**
 
-🎥 **Video link:** _Summative_FrontEnd_
+🎥 **Video link:** (https://youtu.be/Xd-UyoaMFIY)
 
 The video demonstrates:
 1. Navigation between all 6 sections using keyboard only (Tab, Enter, Escape)
