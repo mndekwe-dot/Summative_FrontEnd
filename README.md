@@ -4,7 +4,7 @@
 **Theme:** Campus Life Planner  
 **🌐 Live App**(Link): https://mndekwe-dot.github.io/Summative_FrontEnd/#home
 **📁 Repository:** [github.com/mndekwe-dot](https://github.com/mndekwe-dot)
-**📁 Tutorial Video:**(link): 
+**📁 Tutorial Video:**(link): https://youtu.be/Xd-UyoaMFIY
 
 
 ---
@@ -53,8 +53,8 @@ Each script has a single responsibility. No file handles concerns that belong to
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/mndekwe-dot/[repo-name].git
-   cd [repo-name]
+   git clone https://github.com/mndekwe-dot/Summative_FrontEnd
+   cd [Summative_FrontEnd]
    ```
 
 2. Start a local server — **required** because ES modules do not work when opened as a plain file:
@@ -238,7 +238,6 @@ All data is saved automatically on every change — no Save button needed.
 | `<aside>` | Home page trending sidebar |
 | `<footer>` | Footer with attribution |
 
-- **Skip link:** The very first element in `<body>` is a visually hidden link that jumps to `#main-content`. It becomes visible on focus, allowing keyboard users to skip the nav.
 - **Heading hierarchy:** Each section has exactly one `<h1>`; sub-sections use `<h2>` and `<h3>` in order — no levels are skipped.
 - **Labels:** Every `<input>`, `<textarea>`, and `<select>` has a `<label>` linked by matching `for`/`id`, or an `aria-label` where a visible label is not appropriate.
 - **ARIA live regions:**
@@ -303,7 +302,7 @@ All data is saved automatically on every change — no Save button needed.
 
 > **Rubric: Demo Video (2–3 min)**
 
-🎥 **Video link:** _[add your unlisted YouTube link here]_
+🎥 **Video link:** _Summative_FrontEnd_
 
 The video demonstrates:
 1. Navigation between all 6 sections using keyboard only (Tab, Enter, Escape)
