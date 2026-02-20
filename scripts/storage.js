@@ -1,4 +1,3 @@
-// scripts/storage.js
 const RECORDS_KEY = 'organizer:records';
 const SETTINGS_KEY = 'organizer:settings';
 

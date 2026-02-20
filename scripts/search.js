@@ -1,10 +1,6 @@
-// scripts/search.js
 import { compileRegex } from './validators.js';
 
-/**
- * Highlight regex matches in text with <mark> tags.
- * Safely escapes HTML first to avoid XSS.
- */
+// Highlight regex matches in text with <mark> tags.
 export function escapeHtml(text) {
   return String(text)
     .replace(/&/g, '&amp;')
@@ -19,10 +15,7 @@ export function highlight(text, re) {
   return safe.replace(re, m => `<mark>${escapeHtml(m)}</mark>`);
 }
 
-/**
- * Filter records by regex query against title, tag, and date fields.
- * Returns { filtered, regex, error }.
- */
+// Filter records by regex query against title, tag, and date fields.
 export function filterRecords(records, query, caseSensitive) {
   if (!query.trim()) return { filtered: records, regex: null, error: '' };
 
@@ -36,9 +29,7 @@ export function filterRecords(records, query, caseSensitive) {
   return { filtered, regex: re, error: '' };
 }
 
-/**
- * Sort records by given key.
- */
+// Sort records by given key.
 export function sortRecords(records, sortKey) {
   const copy = [...records];
   switch (sortKey) {

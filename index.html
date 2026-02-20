@@ -49,12 +49,12 @@
       <button id="close-drawer" class="close-drawer-btn" aria-label="Close menu">✕</button>
       <nav aria-label="Mobile navigation">
         <ul role="list" class="drawer-links">
-          <li><a href="#home" class="drawer-link" data-section="home">🏠 Home</a></li>
-          <li><a href="#dashboard" class="drawer-link" data-section="dashboard">📊 Dashboard</a></li>
-          <li><a href="#records" class="drawer-link" data-section="records">📋 My Tasks</a></li>
-          <li><a href="#add" class="drawer-link" data-section="add">➕ Add Task</a></li>
-          <li><a href="#settings" class="drawer-link" data-section="settings">⚙️ Settings</a></li>
-          <li><a href="#about" class="drawer-link" data-section="about">ℹ️ About</a></li>
+          <li><a href="#home" class="drawer-link" data-section="home">Home</a></li>
+          <li><a href="#dashboard" class="drawer-link" data-section="dashboard">Dashboard</a></li>
+          <li><a href="#records" class="drawer-link" data-section="records">My Tasks</a></li>
+          <li><a href="#add" class="drawer-link" data-section="add">Add Task</a></li>
+          <li><a href="#settings" class="drawer-link" data-section="settings">Settings</a></li>
+          <li><a href="#about" class="drawer-link" data-section="about">About</a></li>
         </ul>
       </nav>
     </div>
@@ -62,7 +62,7 @@
   <!-- Main Content -->
   <main id="main-content">
 
-    <!-- ── HOME ── -->
+    <!--  HOME  -->
     <section id="home" class="page">
 
       <!--  home -->
@@ -164,7 +164,7 @@
       </div>
     </section>
 
-    <!-- ── ABOUT ── -->
+    <!--  ABOUT  -->
     <section id="about" class="page hidden" >
 
       <div class="page-header">
@@ -208,7 +208,7 @@
       </div>
     </section>
 
-    <!-- ── DASHBOARD ── -->
+    <!--  DASHBOARD  -->
     <section id="dashboard" class="page hidden" >
       <div class="page-header">
         <h1 id="dashboard-heading">Dashboard</h1>
@@ -263,7 +263,7 @@
       </div>
     </section>
 
-    <!-- ── RECORDS ── -->
+    <!--  RECORDS  -->
     <section id="records" class="page hidden" >
       <div class="page-header">
         <h1 id="records-heading">Records</h1>
@@ -331,13 +331,12 @@
         <p>No records found. Try adjusting your search or add a new task.</p>
         <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;margin-top:0.5rem">
           <button class="btn btn-primary" onclick="showSection('add')">Add Your First Task</button>
-          <button class="btn btn-outline" id="load-seed-btn">📥 Load Sample Data</button>
         </div>
       </div>
 
     </section>
 
-    <!-- ── ADD / EDIT ── -->
+    <!--  ADD / EDIT  -->
     <section id="add" class="page hidden" >
       <div class="page-header">
         <h1 id="form-heading">Add Task</h1>
@@ -415,7 +414,7 @@
       </form>
     </section>
 
-    <!-- ── SETTINGS ── -->
+    <!--  SETTINGS  -->
     <section id="settings" class="page hidden" >
       <div class="page-header">
         <h1 id="settings-heading">Settings</h1>
@@ -478,7 +477,6 @@
               ⬆ Import JSON
               <input type="file" id="settings-import-file" accept=".json" class="sr-only" aria-label="Import JSON data" />
             </label>
-            <button id="settings-load-seed-btn" class="btn btn-outline">📥 Load Sample Data</button>
             <button id="clear-data-btn" class="btn btn-danger">🗑 Clear All Data</button>
           </div>
           <p class="data-note">Export creates a valid JSON file. Import validates structure before loading. "Load Sample Data" merges demo records without overwriting existing ones.</p>

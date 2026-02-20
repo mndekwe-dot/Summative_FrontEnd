@@ -1,14 +1,14 @@
 // app.js — main controller
 import * as State from './state.js';
 import * as UI from './ui.js';
-import { filterRecords, sortRecords } from './search.js';
+import { filterRecords, sortRecords, escapeHtml } from './search.js';
 import { validateTitle, validateDuration, validateDate, validateTag, validateTime, checkDuplicateWord, validateImportRecord } from './validators.js';
 
 // Load saved data from localStorage when the app starts
 State.init();
 
 
-// ── Simple helpers ────────────────────────────────────────────────
+//  Simple helpers 
 
 // Shortcut so we don't have to type document.getElementById every time
 function getEl(id) {
@@ -17,9 +17,9 @@ function getEl(id) {
 
 // Format a YYYY-MM-DD date as "Today", "Tomorrow", or "Fri 20 Feb"
 function formatDate(dateStr) {
-  const date     = new Date(dateStr + 'T00:00:00');
-  const today    = new Date();
-  const tomorrow = new Date();
+  var date     = new Date(dateStr + 'T00:00:00');
+  var today    = new Date();
+  var tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
 
   if (date.toDateString() === today.toDateString())    return 'Today';
@@ -28,28 +28,30 @@ function formatDate(dateStr) {
 }
 
 // Format a number of hours as "1.5h" or "30min"
+// NOTE: ui.js has formatDuration() which also accepts a unit argument for the table/cards.
+// This simpler version is used only on the home page where no unit toggle is needed.
 function formatHours(hours) {
   if (hours < 1) return Math.round(hours * 60) + 'min';
   return hours + 'h';
 }
 
-// Escape special characters so text is safe to put in HTML
-function safe(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-// Parse a YYYY-MM-DD string as a local date (avoids timezone issues)
+// Parse a YYYY-MM-DD string as a local date (avoids timezone issues).
+// Defined here for use in app.js; ui.js has its own private copy for the same reason.
 function parseDate(str) {
   var parts = str.split('-').map(Number);
   return new Date(parts[0], parts[1] - 1, parts[2]);
 }
 
+// Return midnight of today as a Date object.
+// Centralised here so we don't repeat "new Date(); setHours(0,0,0,0)" in every function.
+function getTodayMidnight() {
+  var d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
 
-// ── Theme (light / dark) ──────────────────────────────────────────
+
+//  Theme (light / dark) 
 
 function applyTheme(theme) {
   var systemPrefers = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
@@ -77,7 +79,7 @@ getEl('theme-toggle').addEventListener('click', function () {
 });
 
 
-// ── Navigation ────────────────────────────────────────────────────
+//  Navigation 
 
 var ALL_SECTIONS = ['home', 'about', 'dashboard', 'records', 'add', 'settings'];
 
@@ -120,7 +122,6 @@ function showSection(id) {
 // showSection is also called from onclick attributes in the HTML
 window.showSection = showSection;
 
-// Wire up all nav links
 document.querySelectorAll('.tnav-link, .drawer-link').forEach(function (link) {
   link.addEventListener('click', function (e) {
     e.preventDefault();
@@ -128,7 +129,6 @@ document.querySelectorAll('.tnav-link, .drawer-link').forEach(function (link) {
   });
 });
 
-// Wire up buttons that use data-nav="..." (hero buttons, "View All", etc.)
 document.addEventListener('click', function (e) {
   var btn = e.target.closest('[data-nav]');
   if (btn) {
@@ -143,7 +143,7 @@ getEl('add-event-btn').addEventListener('click', function () {
 });
 
 
-// ── Mobile drawer ─────────────────────────────────────────────────
+//  Mobile drawer 
 
 function openMobileDrawer() {
   getEl('mobile-drawer').classList.remove('hidden');
@@ -160,34 +160,25 @@ function closeMobileDrawer() {
 getEl('menu-toggle').addEventListener('click', openMobileDrawer);
 getEl('close-drawer').addEventListener('click', closeMobileDrawer);
 getEl('drawer-overlay').addEventListener('click', closeMobileDrawer);
+
+// Single Escape handler covers both the drawer and the delete modal
 document.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape') closeMobileDrawer();
+  if (e.key === 'Escape') {
+    closeMobileDrawer();
+    closeDeleteModal();
+  }
 });
 
 
-// ── Home page ─────────────────────────────────────────────────────
-
-// Keep a colour assigned to each tag so they stay consistent
-var TAG_COLOUR_LIST = ['tag-teal', 'tag-rose', 'tag-sky', 'tag-purple', 'tag-amber'];
-var tagColours = {};
-var nextColourIndex = 0;
-
-function getTagColour(tag) {
-  if (!tagColours[tag]) {
-    tagColours[tag] = TAG_COLOUR_LIST[nextColourIndex % TAG_COLOUR_LIST.length];
-    nextColourIndex++;
-  }
-  return tagColours[tag];
-}
+//  Home page 
 
 // Which tag chip is currently selected on the home page ("" means All)
 var homeTagFilter = '';
 
 function renderHome() {
-  var records = State.getRecords();
-  var todayMidnight = new Date();
-  todayMidnight.setHours(0, 0, 0, 0);
-  var oneWeekLater = new Date(todayMidnight.getTime() + 7 * 24 * 60 * 60 * 1000);
+  var records       = State.getRecords();
+  var todayMidnight = getTodayMidnight();
+  var oneWeekLater  = new Date(todayMidnight.getTime() + 7 * 24 * 60 * 60 * 1000);
 
   // Count events due this week
   var thisWeek = records.filter(function (r) {
@@ -197,7 +188,7 @@ function renderHome() {
 
   // Count tasks due in the next 3 days
   var dueSoon = records.filter(function (r) {
-    var d = parseDate(r.dueDate);
+    var d    = parseDate(r.dueDate);
     var diff = d - todayMidnight;
     return diff >= 0 && diff <= 3 * 24 * 60 * 60 * 1000;
   });
@@ -266,11 +257,10 @@ function renderHomeFilterChips(records) {
 
 // Render the upcoming events list
 function renderHomeEvents(records) {
-  var container = getEl('home-events-list');
+  var container     = getEl('home-events-list');
   if (!container) return;
 
-  var todayMidnight = new Date();
-  todayMidnight.setHours(0, 0, 0, 0);
+  var todayMidnight = getTodayMidnight();
 
   var filtered = homeTagFilter
     ? records.filter(function (r) { return r.tag === homeTagFilter; })
@@ -287,18 +277,18 @@ function renderHomeEvents(records) {
   }
 
   container.innerHTML = upcoming.map(function (r) {
-    var colour  = getTagColour(r.tag);
-    var timeStr = r.time ? ' · ' + safe(r.time) : '';
+    var colour  = UI.getTagClass(r.tag);
+    var timeStr = r.time ? ' · ' + escapeHtml(r.time) : '';
     return (
       '<article class="event-item">' +
         '<div class="event-info">' +
-          '<div class="event-title">' + safe(r.title) + '</div>' +
+          '<div class="event-title">' + escapeHtml(r.title) + '</div>' +
           '<div class="event-meta">' +
-            '<span class="event-meta-item">' + safe(formatDate(r.dueDate)) + timeStr + '</span>' +
+            '<span class="event-meta-item">' + escapeHtml(formatDate(r.dueDate)) + timeStr + '</span>' +
             '<span class="event-meta-item">⏱ ' + formatHours(r.duration) + '</span>' +
           '</div>' +
         '</div>' +
-        '<span class="tag-badge ' + colour + '">' + safe(r.tag) + '</span>' +
+        '<span class="tag-badge ' + colour + '">' + escapeHtml(r.tag) + '</span>' +
       '</article>'
     );
   }).join('');
@@ -314,8 +304,7 @@ function renderHomeTasks(records) {
     return;
   }
 
-  var todayMidnight = new Date();
-  todayMidnight.setHours(0, 0, 0, 0);
+  var todayMidnight = getTodayMidnight();
 
   // Show the 5 soonest tasks
   var sorted = records.slice()
@@ -334,7 +323,7 @@ function renderHomeTasks(records) {
       '<div class="task-item" role="listitem">' +
         '<button class="task-check' + (done ? ' done' : '') + '" data-id="' + r.id + '"></button>' +
         '<div class="task-text">' +
-          '<div class="task-title' + (done ? ' done' : '') + '">' + safe(r.title) + '</div>' +
+          '<div class="task-title' + (done ? ' done' : '') + '">' + escapeHtml(r.title) + '</div>' +
           '<div class="task-due">' + formatDate(r.dueDate) + '</div>' +
         '</div>' +
         warning +
@@ -386,9 +375,9 @@ function renderHomeTrending(records) {
     var name  = labels[tag] || tag + ' Events';
     return (
       '<div class="trending-item">' +
-        '<div class="trending-name">' + safe(name) + '</div>' +
+        '<div class="trending-name">' + escapeHtml(name) + '</div>' +
         '<div class="trending-meta">' +
-          '<span class="tag-badge ' + getTagColour(tag) + '">' + safe(tag) + '</span>' +
+          '<span class="tag-badge ' + UI.getTagClass(tag) + '">' + escapeHtml(tag) + '</span>' +
           '<span class="trending-count">' + count + ' record' + (count !== 1 ? 's' : '') + '</span>' +
         '</div>' +
       '</div>'
@@ -397,17 +386,17 @@ function renderHomeTrending(records) {
 }
 
 
-// ── Records page ──────────────────────────────────────────────────
+//  Records page 
 
 var currentSearchRegex = null;
 var recordToDeleteId   = null;
 
 function refreshRecords() {
-  var allRecords  = State.getRecords();
-  var query       = getEl('search-input').value;
-  var caseSens    = getEl('case-toggle').checked;
-  var tagFilter   = getEl('tag-filter').value;
-  var sortKey     = getEl('sort-select').value;
+  var allRecords = State.getRecords();
+  var query      = getEl('search-input').value;
+  var caseSens   = getEl('case-toggle').checked;
+  var tagFilter  = getEl('tag-filter').value;
+  var sortKey    = getEl('sort-select').value;
 
   // Filter by search query (supports regex)
   var result = filterRecords(allRecords, query, caseSens);
@@ -427,7 +416,6 @@ function refreshRecords() {
   UI.renderCards(sorted, currentSearchRegex, editRecord, promptDelete, toggleDone);
   UI.updateEmptyState(sorted.length > 0);
   UI.updateRecordCount(sorted.length, allRecords.length);
-  UI.populateTagFilter();
 }
 
 // Re-run search/sort whenever controls change
@@ -446,7 +434,7 @@ function toggleDone(id) {
 }
 
 
-// ── Delete confirmation modal ─────────────────────────────────────
+//  Delete confirmation modal 
 
 function promptDelete(id) {
   var record = State.getRecordById(id);
@@ -474,12 +462,8 @@ getEl('delete-modal').addEventListener('click', function (e) {
   if (e.target === getEl('delete-modal')) closeDeleteModal();
 });
 
-document.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape') closeDeleteModal();
-});
 
-
-// ── Export / Import ───────────────────────────────────────────────
+//  Export / Import 
 
 function exportJSON() {
   var records = State.getRecords();
@@ -531,13 +515,12 @@ getEl('settings-import-file').addEventListener('change', function (e) {
 });
 
 
-// ── Add / Edit form ───────────────────────────────────────────────
+//  Add / Edit form 
 
 var taskForm    = getEl('task-form');
 var editIdInput = getEl('edit-id'); // hidden field — stores the ID when editing an existing task
 
 function clearForm() {
-  // Clear the hidden edit-id field
   editIdInput.value = '';
 
   // Clear every text input and textarea
@@ -568,10 +551,8 @@ function editRecord(id) {
   var record = State.getRecordById(id);
   if (!record) return;
 
-  // Store the ID so the submit handler knows it's an edit not a new record
   editIdInput.value = id;
 
-  // Populate the form with the existing record's data
   getEl('field-title').value    = record.title;
   getEl('field-due').value      = record.dueDate;
   getEl('field-duration').value = record.duration;
@@ -620,7 +601,6 @@ getEl('field-notes').addEventListener('input', function (e) {
 taskForm.addEventListener('submit', function (e) {
   e.preventDefault();
 
-  // Read all form values
   var title    = getEl('field-title').value.trim();
   var dueDate  = getEl('field-due').value.trim();
   var duration = getEl('field-duration').value.trim();
@@ -629,81 +609,57 @@ taskForm.addEventListener('submit', function (e) {
   var time     = getEl('field-time').value.trim();
   var notes    = getEl('field-notes').value.trim();
 
-  // Validate each required field
   var titleError    = validateTitle(title);
   var dateError     = validateDate(dueDate);
   var durationError = validateDuration(duration);
   var tagError      = validateTag(tag);
   var timeError     = validateTime(time);
 
-  // Display any errors next to their fields
   getEl('err-title').textContent    = titleError;
   getEl('err-due').textContent      = dateError;
   getEl('err-duration').textContent = durationError;
   getEl('err-tag').textContent      = tagError;
   getEl('err-time').textContent     = timeError;
 
-  // Stop here if there are validation errors
   if (titleError || dateError || durationError || tagError || timeError) {
     getEl('form-status').textContent = 'Please fix the errors above.';
     return;
   }
 
-  // Convert to hours if the user entered minutes
   var durationInHours = (unit === 'minutes') ? parseFloat(duration) / 60 : parseFloat(duration);
   var now = new Date().toISOString();
 
   if (editIdInput.value) {
-    // UPDATE — edit-id has a value, so this is an existing task
     State.updateRecord(editIdInput.value, {
-      title:     title,
-      dueDate:   dueDate,
-      duration:  durationInHours,
-      unit:      unit,
-      tag:       tag,
-      time:      time,
-      notes:     notes,
-      updatedAt: now
+      title: title, dueDate: dueDate, duration: durationInHours,
+      unit: unit, tag: tag, time: time, notes: notes, updatedAt: now
     });
     getEl('form-status').textContent = '✅ Task updated.';
   } else {
-    // ADD — no edit-id, so create a new task
     State.addRecord({
-      id:        State.generateId(),
-      title:     title,
-      dueDate:   dueDate,
-      duration:  durationInHours,
-      unit:      unit,
-      tag:       tag,
-      time:      time,
-      notes:     notes,
-      done:      false,
-      createdAt: now,
-      updatedAt: now
+      id: State.generateId(), title: title, dueDate: dueDate,
+      duration: durationInHours, unit: unit, tag: tag, time: time,
+      notes: notes, done: false, createdAt: now, updatedAt: now
     });
     getEl('form-status').textContent = '✅ Task saved.';
   }
 
   clearForm();
-  // Short pause so the user can read the success message, then go to records
   setTimeout(function () { showSection('records'); }, 700);
 });
 
 
-// ── Settings page ─────────────────────────────────────────────────
+//  Settings page 
 
 function renderSettings() {
   var settings = State.getSettings();
 
-  // Tick the correct theme radio button
   var themeRadio = document.querySelector('input[name="theme"][value="' + settings.theme + '"]');
   if (themeRadio) themeRadio.checked = true;
 
-  // Tick the correct unit radio button
   var unitRadio = document.querySelector('input[name="default-unit"][value="' + settings.defaultUnit + '"]');
   if (unitRadio) unitRadio.checked = true;
 
-  // Show the list of tags with remove buttons for custom ones
   UI.renderTagList(function (tag) {
     if (State.removeTag(tag)) renderSettings();
   });
@@ -748,7 +704,6 @@ getEl('add-tag-btn').addEventListener('click', function () {
   }
 });
 
-// Press Enter in the tag input to add it
 getEl('new-tag-input').addEventListener('keydown', function (e) {
   if (e.key === 'Enter') {
     e.preventDefault();
@@ -763,7 +718,6 @@ getEl('clear-data-btn').addEventListener('click', function () {
   }
 });
 
-// Update weekly cap as the user types
 getEl('cap-input').addEventListener('input', function () {
   var cap = parseInt(getEl('cap-input').value) || 40;
   State.updateSettings({ weeklyCapHours: cap });
@@ -771,7 +725,7 @@ getEl('cap-input').addEventListener('input', function () {
 });
 
 
-// ── Quick converter (inside Settings) ────────────────────────────
+//  Quick converter (inside Settings) 
 
 function updateConverter() {
   var value  = parseFloat(getEl('conv-input').value);
@@ -779,10 +733,7 @@ function updateConverter() {
   var to     = getEl('conv-to').value;
   var result = getEl('conv-result');
 
-  if (isNaN(value)) {
-    result.textContent = '';
-    return;
-  }
+  if (isNaN(value)) { result.textContent = ''; return; }
 
   var converted;
   if (from === to)             converted = value;
@@ -797,12 +748,13 @@ function updateConverter() {
 });
 
 
-// ── Start the app ─────────────────────────────────────────────────
+//  Start the app 
 
 // Go to the section in the URL hash, or home if none
 var startSection = window.location.hash.slice(1);
 if (ALL_SECTIONS.includes(startSection)) showSection(startSection);
 else showSection('home');
 
+// Populate tag controls once on startup
 UI.populateTagFilter();
 UI.populateTagDatalist();

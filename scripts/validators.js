@@ -1,10 +1,6 @@
-// scripts/validators.js
-
-// ── Regex Patterns ─────────────────────────────────────────────────
-// 1. Title: no leading/trailing spaces, no double spaces
+//  Regex Patterns 
 const RE_TITLE = /^\S(?:.*\S)?$/;
 
-// 2. Duration: non-negative number, up to 2 decimal places
 const RE_DURATION = /^(0|[1-9]\d*)(\.\d{1,2})?$/;
 
 // 3. Date: YYYY-MM-DD strict
@@ -23,7 +19,7 @@ const RE_DUP_WORD = /\b(\w+)\s+\1\b/i;
 // 7. ADVANCED — Lookahead: tag must NOT start with a number (positive lookahead for letter)
 const RE_TAG_LOOKAHEAD = /^(?=[A-Za-z])/;
 
-// ── Validators ─────────────────────────────────────────────────────
+//  Validators 
 export function validateTitle(val) {
   if (!val || val.trim() === '') return 'Title is required.';
   if (!RE_TITLE.test(val)) return 'Title must not have leading or trailing spaces.';
@@ -62,7 +58,7 @@ export function checkDuplicateWord(val) {
   return RE_DUP_WORD.test(val);
 }
 
-// ── Safe Regex Compiler ────────────────────────────────────────────
+//  Safe Regex Compiler 
 export function compileRegex(input, flags = 'i') {
   try {
     return input ? new RegExp(input, flags) : null;
@@ -71,7 +67,7 @@ export function compileRegex(input, flags = 'i') {
   }
 }
 
-// ── JSON Import Validator ──────────────────────────────────────────
+//  JSON Import Validator 
 export function validateImportRecord(rec) {
   if (typeof rec !== 'object' || rec === null) return false;
   if (typeof rec.id !== 'string') return false;

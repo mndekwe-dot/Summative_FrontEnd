@@ -1,4 +1,3 @@
-// scripts/state.js
 import { loadRecords, saveRecords, loadSettings, saveSettings } from './storage.js';
 
 const DEFAULT_TAGS = ['Lecture', 'Assignment', 'Exam', 'Study', 'Project', 'Meeting', 'Lab', 'Other'];
@@ -18,17 +17,14 @@ export function init() {
   const saved = loadSettings();
   if (saved) {
     settings = { ...DEFAULT_SETTINGS, ...saved };
-    // Merge default tags (don't lose them)
     const allTags = new Set([...DEFAULT_TAGS, ...(saved.tags || [])]);
     settings.tags = [...allTags];
   }
 }
 
-// ── Records ──────────────────────────────────────────────────────
+//Records 
 export function getRecords() { return [...records]; }
-
 export function getRecordById(id) { return records.find(r => r.id === id); }
-
 export function addRecord(record) {
   records.push(record);
   saveRecords(records);
@@ -52,7 +48,7 @@ export function importRecords(newRecords) {
   saveRecords(records);
 }
 
-// ── Settings ─────────────────────────────────────────────────────
+//Settings 
 export function getSettings() { return { ...settings }; }
 
 export function updateSettings(updates) {
@@ -80,7 +76,7 @@ export function removeTag(tag) {
 
 export function isDefaultTag(tag) { return DEFAULT_TAGS.includes(tag); }
 
-// ── ID generator ─────────────────────────────────────────────────
+//ID generator 
 export function generateId() {
   return 'evt_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 }

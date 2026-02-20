@@ -1,10 +1,8 @@
-// ui.js — functions that build and update the HTML on the page
 import { getRecords, getSettings, getTags, isDefaultTag } from './state.js';
 import { highlight, escapeHtml } from './search.js';
 
 
-// ── Tag colour helper ─────────────────────────────────────────────
-// Each tag gets a colour class. Once assigned it stays the same.
+//  Tag colour helper 
 
 var TAG_COLOUR_LIST = ['tag-teal', 'tag-rose', 'tag-sky', 'tag-purple', 'tag-amber', 'tag-default'];
 var tagColourMap   = {};
@@ -24,7 +22,6 @@ function tagBadge(tag, regex) {
   var text     = regex ? highlight(tag, regex) : escapeHtml(tag);
   return '<span class="tag-badge ' + cls + '">' + text + '</span>';
 }
-
 // Format hours as "1.5h" or "30 min"
 function formatDuration(hours, unit) {
   if (unit === 'minutes') return Math.round(hours * 60) + ' min';
@@ -39,7 +36,7 @@ function parseLocalDate(str) {
 }
 
 
-// ── Records table (shown on desktop) ─────────────────────────────
+//  Records table (shown on desktop) 
 
 export function renderTable(records, regex, onEdit, onDelete, onToggleDone) {
   var tbody    = document.getElementById('records-tbody');
@@ -94,7 +91,7 @@ export function renderTable(records, regex, onEdit, onDelete, onToggleDone) {
 }
 
 
-// ── Records cards (shown on mobile) ──────────────────────────────
+//  Records cards (shown on mobile) 
 
 export function renderCards(records, regex, onEdit, onDelete, onToggleDone) {
   var container = document.getElementById('records-cards');
@@ -148,7 +145,7 @@ export function renderCards(records, regex, onEdit, onDelete, onToggleDone) {
 }
 
 
-// ── Dashboard ─────────────────────────────────────────────────────
+//  Dashboard 
 
 export function renderDashboard() {
   var records  = getRecords();
@@ -292,7 +289,7 @@ function renderTagBars(tagCounts) {
 }
 
 
-// ── Tag controls ──────────────────────────────────────────────────
+//  Tag controls 
 
 // Fill the tag dropdown on the Records page
 export function populateTagFilter() {
@@ -335,7 +332,7 @@ export function renderTagList(onRemove) {
 }
 
 
-// ── Misc UI updates ───────────────────────────────────────────────
+//  Misc UI updates 
 
 // Show or hide the "no records" empty state
 export function updateEmptyState(hasRecords) {
