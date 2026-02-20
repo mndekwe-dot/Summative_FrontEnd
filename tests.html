@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CampusFlow — Tests</title>
+  <style>
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: #0d1117; color: #e6edf3; padding: 2rem; }
+    h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+    h2 { font-size: 1rem; color: #58a6ff; margin: 1.5rem 0 0.5rem; }
+    .pass { color: #3fb950; }
+    .fail { color: #f85149; }
+    .result { font-size: 0.85rem; padding: 0.3rem 0; border-bottom: 1px solid #21262d; font-family: monospace; }
+    #summary { margin-top: 1.5rem; font-weight: bold; font-size: 1.1rem; }
+  </style>
+</head>
+<body>
+  <h1>🧪 CampusFlow — Test Suite</h1>
+  <div id="output"></div>
+  <div id="summary"></div>
+
+  <script type="module">
+    import { validateTitle, validateDuration, validateDate, validateTag, validateTime, checkDuplicateWord, compileRegex } from './scripts/validators.js';
+    import { filterRecords, sortRecords, highlight, escapeHtml } from './scripts/search.js';
+
+    const output = document.getElementById('output');
+    let passed = 0, failed = 0;
+
+    function assert(description, got, expected) {
+      const ok = got === expected;
+      if (ok) passed++; else failed++;
+      const div = document.createElement('div');
+      div.className = 'result';
+      div.innerHTML = `<span class="${ok ? 'pass' : 'fail'}">${ok ? '✅' : '❌'}</span> ${description}${!ok ? ` — got: <code>${JSON.stringify(got)}</code>, expected: <code>${JSON.stringify(expected)}</code>` : ''}`;
+      output.appendChild(div);
+    }
+
+    function section(name) {
+      const h = document.createElement('h2');
+      h.textContent = name;
+      output.appendChild(h);
+    }
+
+    // ── validateTitle ────────────────────────────────────────────
+    section('validateTitle');
+    assert('accepts valid title', validateTitle('Study for Biology'), '');
+    assert('rejects empty string', validateTitle(''), 'Title is required.');
+    assert('rejects leading space', validateTitle(' Bad title'), 'Title must not have leading or trailing spaces.');
+    assert('rejects trailing space', validateTitle('Bad title '), 'Title must not have leading or trailing spaces.');
+    assert('rejects double space', validateTitle('Bad  title'), 'Title must not contain consecutive spaces.');
+    assert('accepts single word', validateTitle('Chemistry'), '');
+    assert('rejects >120 chars', validateTitle('A'.repeat(121)), 'Title must be 120 characters or fewer.');
+
+    // ── validateDuration ─────────────────────────────────────────
+    section('validateDuration');
+    assert('accepts integer', validateDuration('2'), '');
+    assert('accepts decimal', validateDuration('1.5'), '');
+    assert('accepts .25', validateDuration('0.25'), '');
+    assert('rejects empty', validateDuration(''), 'Duration is required.');
+    assert('rejects zero', validateDuration('0'), 'Duration must be greater than 0.');
+    assert('rejects negative', validateDuration('-1'), 'Duration must be a non-negative number (e.g. 1.5).');
+    assert('rejects 3 decimal places', validateDuration('1.123'), 'Duration must be a non-negative number (e.g. 1.5).');
+    assert('rejects text', validateDuration('abc'), 'Duration must be a non-negative number (e.g. 1.5).');
+
+    // ── validateDate ─────────────────────────────────────────────
+    section('validateDate');
+    assert('accepts valid date', validateDate('2025-09-29'), '');
+    assert('rejects bad month 13', validateDate('2025-13-01'), 'Date must be in YYYY-MM-DD format (e.g. 2025-09-29).');
+    assert('rejects day 00', validateDate('2025-09-00'), 'Date must be in YYYY-MM-DD format (e.g. 2025-09-29).');
+    assert('rejects wrong format', validateDate('29-09-2025'), 'Date must be in YYYY-MM-DD format (e.g. 2025-09-29).');
+    assert('rejects empty', validateDate(''), 'Date is required.');
+    assert('accepts leap year edge', validateDate('2024-02-29'), '');
+
+    // ── validateTag ──────────────────────────────────────────────
+    section('validateTag');
+    assert('accepts single word', validateTag('Study'), '');
+    assert('accepts hyphenated', validateTag('Co-op'), '');
+    assert('accepts multi-word', validateTag('Lab Session'), '');
+    assert('rejects empty', validateTag(''), 'Tag is required.');
+    assert('rejects number start', validateTag('1Study'), 'Tag must start with a letter.');
+    assert('rejects special char', validateTag('Study!'), 'Tag may only contain letters, spaces, or hyphens.');
+
+    // ── validateTime ─────────────────────────────────────────────
+    section('validateTime');
+    assert('accepts 09:00', validateTime('09:00'), '');
+    assert('accepts 23:59', validateTime('23:59'), '');
+    assert('accepts empty (optional)', validateTime(''), '');
+    assert('rejects 24:00', validateTime('24:00'), 'Time must be in HH:MM (24-hour) format.');
+    assert('rejects 12:60', validateTime('12:60'), 'Time must be in HH:MM (24-hour) format.');
+
+    // ── checkDuplicateWord (advanced back-reference) ─────────────
+    section('checkDuplicateWord (back-reference regex)');
+    assert('detects "the the"', checkDuplicateWord('Go to the the library'), true);
+    assert('detects "study study"', checkDuplicateWord('I need to study study more'), true);
+    assert('no false positive', checkDuplicateWord('Study hard every day'), false);
+    assert('case-insensitive The the', checkDuplicateWord('The the library'), true);
+
+    // ── compileRegex (safe) ──────────────────────────────────────
+    section('compileRegex');
+    assert('returns RegExp for valid input', compileRegex('exam') instanceof RegExp, true);
+    assert('returns null for invalid regex', compileRegex('[invalid'), null);
+    assert('returns null for empty string', compileRegex(''), null);
+
+    // ── escapeHtml ───────────────────────────────────────────────
+    section('escapeHtml');
+    assert('escapes <>', escapeHtml('<script>'), '&lt;script&gt;');
+    assert('escapes &', escapeHtml('a & b'), 'a &amp; b');
+    assert('escapes "', escapeHtml('"hi"'), '&quot;hi&quot;');
+
+    // ── highlight ────────────────────────────────────────────────
+    section('highlight');
+    const re = new RegExp('bio', 'i');
+    assert('wraps match in mark', highlight('Study Biology', re), 'Study <mark>Bio</mark>logy');
+    assert('returns safe text when no regex', highlight('Plain text', null), 'Plain text');
+    assert('escapes HTML before marking', highlight('<b>bold</b>', new RegExp('bold','i')), '&lt;b&gt;<mark>bold</mark>&lt;/b&gt;');
+
+    // ── filterRecords ────────────────────────────────────────────
+    section('filterRecords');
+    const recs = [
+      { id: '1', title: 'Biology Lecture', tag: 'Lecture', dueDate: '2025-10-01', notes: '' },
+      { id: '2', title: 'Math Exam', tag: 'Exam', dueDate: '2025-10-05', notes: '' },
+      { id: '3', title: 'Physics Lab', tag: 'Lab', dueDate: '2025-10-03', notes: '' },
+    ];
+    assert('filters by title pattern', filterRecords(recs, 'bio', false).filtered.length, 1);
+    assert('filters case-insensitive', filterRecords(recs, 'MATH', false).filtered.length, 1);
+    assert('returns all on empty query', filterRecords(recs, '', false).filtered.length, 3);
+    assert('returns error on invalid regex', filterRecords(recs, '[bad', false).error, 'Invalid regex pattern.');
+    assert('filters by tag', filterRecords(recs, 'Exam', false).filtered[0].title, 'Math Exam');
+
+    // ── sortRecords ──────────────────────────────────────────────
+    section('sortRecords');
+    const sorted = sortRecords(recs, 'title-asc');
+    assert('sorts title A→Z first is Biology', sorted[0].title, 'Biology Lecture');
+    assert('sorts title A→Z last is Physics', sorted[2].title, 'Physics Lab');
+    const byDateDesc = sortRecords(recs, 'date-desc');
+    assert('date-desc first is latest', byDateDesc[0].dueDate, '2025-10-05');
+
+    // ── Summary ──────────────────────────────────────────────────
+    const summary = document.getElementById('summary');
+    summary.className = failed === 0 ? 'pass' : 'fail';
+    summary.textContent = `${passed + failed} tests — ✅ ${passed} passed · ❌ ${failed} failed`;
+  </script>
+</body>
+</html>

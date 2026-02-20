@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organizer — University Life Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+  <!--TOP NAV (homepage-style)-->
+  <header class="topnav" aid="topnav">
+    <div class="topnav-inner">
+      <div class="topnav-brand">
+        <span class="topnav-logo" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="36" height="36" rx="10" fill="url(#logoGrad)"/>
+            <path d="M18 8L26 13V23L18 28L10 23V13L18 8Z" stroke="white" stroke-width="2" fill="none"/>
+            <circle cx="18" cy="18" r="3" fill="white"/>
+            <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop stop-color="#1e6b5e"/><stop offset="1" stop-color="#0f4c42"/></defs>
+          </svg>
+        </span>
+        <div>
+          <span class="topnav-name">Organizer</span>
+          <span class="topnav-tagline">Organize. Connect. Follow.</span>
+        </div>
+      </div>
+      <nav class="topnav-links" aria-label="Top navigation">
+        <a href="#home" class="tnav-link active" data-section="home">Home</a>
+        <a href="#dashboard" class="tnav-link" data-section="dashboard">Dashboard</a>
+        <a href="#records" class="tnav-link" data-section="records">My Tasks</a>
+        <a href="#settings" class="tnav-link" data-section="settings">Settings</a>
+        <a href="#about" class="tnav-link" data-section="about">About</a>
+      </nav>
+      <div class="topnav-actions">
+        <button id="theme-toggle" aria-label="Toggle dark/light theme" class="theme-btn">🌙</button>
+        <button class="btn btn-add-event" id="add-event-btn" aria-label="Add new event">
+          <span aria-hidden="true">+</span> Add Event
+        </button>
+        <button id="menu-toggle" class="mobile-menu-btn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile drawer -->
+  <div id="mobile-drawer" class="mobile-drawer hidden" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <div class="drawer-inner">
+      <button id="close-drawer" class="close-drawer-btn" aria-label="Close menu">✕</button>
+      <nav aria-label="Mobile navigation">
+        <ul role="list" class="drawer-links">
+          <li><a href="#home" class="drawer-link" data-section="home">🏠 Home</a></li>
+          <li><a href="#dashboard" class="drawer-link" data-section="dashboard">📊 Dashboard</a></li>
+          <li><a href="#records" class="drawer-link" data-section="records">📋 My Tasks</a></li>
+          <li><a href="#add" class="drawer-link" data-section="add">➕ Add Task</a></li>
+          <li><a href="#settings" class="drawer-link" data-section="settings">⚙️ Settings</a></li>
+          <li><a href="#about" class="drawer-link" data-section="about">ℹ️ About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <!-- Main Content -->
+  <main id="main-content">
+
+    <!-- ── HOME ── -->
+    <section id="home" class="page">
+
+      <!--  home -->
+      <div class="home">
+        <div class="home-content">
+          <span class=" home-badge" >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Welcome back, Student
+          </span>
+          <h1 id="home-heading">Your Campus Life,<br>Organized</h1>
+          <p class=" home-sub">Discover events, manage your schedule, and make the most of university life in one place.</p>
+          <div class="home-btn">
+            <button class="btn btn-home-primary" data-nav="add">Get Started</button>
+            <button class="btn btn-home-outline" data-nav="dashboard">View Dashboard</button>
+          </div>
+        </div>
+        <div class=" home-art">
+          <div class=" home-blob blob-1"></div>
+          <div class=" home-blob blob-2"></div>
+          <div class=" home-blob blob-3"></div>
+        </div>
+      </div>
+
+      <!-- Quick stats -->
+      <div class="home-stats" role="list" >
+        <div class="home-stat-card hsc-teal" role="listitem">
+          <span class="hsc-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </span>
+          <span class="hsc-num" id="home-stat-events">0</span>
+          <span class="hsc-label">Events This Week</span>
+        </div>
+        <div class="home-stat-card hsc-rose" role="listitem">
+          <span class="hsc-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
+          <span class="hsc-num" id="home-stat-tasks">0</span>
+          <span class="hsc-label">Tasks Due Soon</span>
+        </div>
+        <div class="home-stat-card hsc-sky" role="listitem">
+          <span class="hsc-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </span>
+          <span class="hsc-num" id="home-stat-total">0</span>
+          <span class="hsc-label">Total Records</span>
+        </div>
+      </div>
+
+      <!-- Two-column layout: events + sidebar -->
+      <div class="home-body">
+        <div class="home-main-col">
+
+          <!-- Upcoming Events -->
+          <div class="home-section-header">
+            <h2>Upcoming Events</h2>
+            <button class="view-all-btn" data-nav="records">View All <span>›</span></button>
+          </div>
+          <div id="home-events-list" class="home-events-list" >
+            <!-- Populated by JS -->
+          </div>
+          <!-- My Tasks -->
+          <div class="home-section-header" style="margin-top:2rem">
+            <h2>My Tasks</h2>
+            <button class="view-all-btn" data-nav="records">View All <span aria-hidden="true">›</span></button>
+          </div>
+          <div class="tasks-card " role="list" aria-label="Task list" id="home-tasks-list">
+            <!-- Populated by JS -->
+          </div>
+
+        </div>
+
+        <!-- Right: Filter + Trending -->
+        <aside class="home-sidebar" >
+
+          <div class="sidebar-widget ">
+            <h3>Filter Events</h3>
+            <div class="filter-tags" id="home-filter-tags" role="group" aria-label="Filter by tag">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div class="sidebar-widget " style="margin-top:1.25rem">
+            <h3>Trending Now</h3>
+            <div id="home-trending" class="trending-list" aria-label="Trending events and groups">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div class="sidebar-widget streak-widget" style="margin-top:1.25rem">
+            <div class="streak-header">
+              <span aria-hidden="true">⚡</span> Your Streak
+            </div>
+            <div class="streak-number" id="home-streak">0 days</div>
+            <p class="streak-sub">Keep attending events!</p>
+            <button class="btn btn-streak" data-nav="records">Continue Streak</button>
+          </div>
+
+        </aside>
+      </div>
+    </section>
+
+    <!-- ── ABOUT ── -->
+    <section id="about" class="page hidden" >
+
+      <div class="page-header">
+        <h1 id="about-heading">About Organizer</h1>
+        <p class="subtitle">Your personal university life organiser</p>
+      </div>
+      <div class="about-grid">
+        <div class="about-card">
+          <h2>What is Organizer</h2>
+          <p>Organizer is a campus life planner built for university students. Track tasks, events, study sessions, and deadlines — all in one accessible, offline-ready app. No sign-up required; everything lives safely in your browser.</p>
+        </div>
+        <div class="about-card">
+          <h2>Key Features</h2>
+          <ul>
+            <li>Add & manage tasks with tags, due dates, and durations</li>
+            <li>Live regex-powered search with match highlighting</li>
+            <li>Dashboard with trend charts and cap/target alerts</li>
+            <li>Auto-save with JSON import &amp; export</li>
+            <li>Full keyboard navigation &amp; ARIA live regions</li>
+            <li>Mobile-first responsive design</li>
+          </ul>
+        </div>
+        <div class="about-card">
+          <h2>Contact</h2>
+          <p>Built as a university project demonstrating modern vanilla web standards.</p>
+          <div class="contact-links">
+            <a href="https://github.com/mndekwe-dot" target="_blank" rel="noopener" class="contact-btn">🐙 GitHub</a>
+            <a href="/cdn-cgi/l/email-protection#97fab9f9f3f2fce0f2d7f6fbe2e4e3e2f3f2f9e3b9f4f8fa" class="contact-btn">✉️ Email</a>
+          </div>
+        </div>
+        <div class="about-card  ">
+          <h2>How to Use</h2>
+          <ol>
+            <li>Go to <strong>Add / Edit</strong> to create your first task</li>
+            <li>Browse and filter in <strong>Records</strong></li>
+            <li>Monitor progress on the <strong>Dashboard</strong></li>
+            <li>Tweak duration units &amp; tags in <strong>Settings</strong></li>
+            <li>Import/export JSON for backup</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DASHBOARD ── -->
+    <section id="dashboard" class="page hidden" >
+      <div class="page-header">
+        <h1 id="dashboard-heading">Dashboard</h1>
+        <p class="subtitle">Your week at a glance</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card" aria-label="Total records">
+          <span class="stat-number" id="stat-total">0</span>
+          <span class="stat-label">Total Tasks</span>
+        </div>
+        <div class="stat-card" aria-label="Total duration">
+          <span class="stat-number" id="stat-duration">0h</span>
+          <span class="stat-label">Total Duration</span>
+        </div>
+        <div class="stat-card" aria-label="Top tag">
+          <span class="stat-number" id="stat-top-tag">—</span>
+          <span class="stat-label">Top Tag</span>
+        </div>
+        <div class="stat-card" aria-label="Due this week">
+          <span class="stat-number" id="stat-week">0</span>
+          <span class="stat-label">Due This Week</span>
+        </div>
+      </div>
+
+      <!-- Cap/Target -->
+      <div class="cap-section" >
+        <h2 id="cap-heading">Weekly Duration Cap</h2>
+        <div class="cap-row">
+          <label for="cap-input" class="cap-label">Set weekly cap (hours):</label>
+          <input type="number" id="cap-input" min="1" max="168" value="40" class="cap-input" aria-describedby="cap-status" />
+        </div>
+        <div class="cap-bar-wrap">
+          <div class="cap-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="cap-bar">
+            <div class="cap-fill" id="cap-fill"></div>
+          </div>
+        </div>
+        <p id="cap-status" class="cap-status"></p>
+      </div>
+
+      <!-- 7-day trend -->
+      <div class="trend-section " >
+        <h2 id="trend-heading">Last 7 Days</h2>
+        <div class="trend-chart" id="trend-chart" aria-label="Bar chart of tasks added per day for the last 7 days" role="img"></div>
+        <div class="trend-labels" id="trend-labels" aria-hidden="true"></div>
+      </div>
+
+      <!-- Tag distribution -->
+      <div class="tag-dist" >
+        <h2 id="tagdist-heading">Tasks by Tag</h2>
+        <div id="tag-dist-chart" class="tag-bars"></div>
+      </div>
+    </section>
+
+    <!-- ── RECORDS ── -->
+    <section id="records" class="page hidden" >
+      <div class="page-header">
+        <h1 id="records-heading">Records</h1>
+        <p class="subtitle">All your tasks and events</p>
+      </div>
+
+      <!-- Search & Filter Bar -->
+      <div class="toolbar  " role="search" aria-label="Search and filter records">
+        <div class="search-wrap">
+          <label for="search-input" class="sr-only">Search (regex supported)</label>
+          <input type="text" id="search-input" placeholder="Search… (regex ok, e.g. ^bio|exam$)" class="search-input" aria-describedby="search-hint" />
+          <span id="search-hint" class="search-hint">Regex supported. Toggle case sensitivity below.</span>
+          <div id="search-error" class="search-error" role="alert" aria-live="polite"></div>
+        </div>
+        <div class="toolbar-controls">
+          <label class="toggle-label">
+            <input type="checkbox" id="case-toggle" /> Case sensitive
+          </label>
+          <select id="tag-filter" aria-label="Filter by tag" class="select-input">
+            <option value="">All tags</option>
+          </select>
+          <select id="sort-select" aria-label="Sort records" class="select-input">
+            <option value="date-desc">Date ↓ (newest)</option>
+            <option value="date-asc">Date ↑ (oldest)</option>
+            <option value="title-asc">Title A→Z</option>
+            <option value="title-desc">Title Z→A</option>
+            <option value="duration-asc">Duration ↑</option>
+            <option value="duration-desc">Duration ↓</option>
+          </select>
+          <button id="export-btn" class="btn btn-outline" aria-label="Export records as JSON">⬇ Export</button>
+          <label for="import-file" class="btn btn-outline import-label" tabindex="0">
+            ⬆ Import
+            <input type="file" id="import-file" accept=".json" class="sr-only" aria-label="Import JSON file" />
+          </label>
+        </div>
+      </div>
+
+      <!-- Record Count -->
+      <p id="record-count" class="record-count" aria-live="polite"></p>
+
+      <!-- Table (desktop) -->
+      <div class="table-wrap" role="region" aria-label="Records table" tabindex="0">
+        <table id="records-table" aria-label="Campus life records">
+          <thead>
+            <tr>
+              <th scope="col">Title</th>
+              <th scope="col">Due Date</th>
+              <th scope="col">Duration</th>
+              <th scope="col">Tag</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="records-tbody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Cards (mobile) -->
+      <div id="records-cards" class="cards-grid" aria-label="Records list"></div>
+
+      <!-- Empty state -->
+      <div id="empty-state" class="empty-state hidden">
+        <p class="empty-icon" aria-hidden="true">📭</p>
+        <p>No records found. Try adjusting your search or add a new task.</p>
+        <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;margin-top:0.5rem">
+          <button class="btn btn-primary" onclick="showSection('add')">Add Your First Task</button>
+          <button class="btn btn-outline" id="load-seed-btn">📥 Load Sample Data</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── ADD / EDIT ── -->
+    <section id="add" class="page hidden" >
+      <div class="page-header">
+        <h1 id="form-heading">Add Task</h1>
+        <p class="subtitle" id="form-subtitle">Fill in the details below</p>
+      </div>
+
+      <form id="task-form" class="task-form  " novalidate aria-describedby="form-status">
+        <input type="hidden" id="edit-id" />
+
+        <div class="form-row">
+          <div class="field-group">
+            <label for="field-title">Title <span aria-hidden="true">*</span></label>
+            <input type="text" id="field-title" required autocomplete="off"
+              aria-required="true" aria-describedby="err-title"
+              placeholder="e.g. Study for biology midterm" />
+            <span class="field-error" id="err-title" role="alert" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="form-row two-col">
+          <div class="field-group">
+            <label for="field-due">Due Date <span aria-hidden="true">*</span></label>
+            <input type="text" id="field-due" required
+              aria-required="true" aria-describedby="err-due"
+              placeholder="YYYY-MM-DD" />
+            <span class="field-error" id="err-due" role="alert" aria-live="polite"></span>
+          </div>
+          <div class="field-group">
+            <label for="field-duration">Duration <span aria-hidden="true">*</span></label>
+            <div class="duration-row">
+              <input type="text" id="field-duration" required
+                aria-required="true" aria-describedby="err-duration"
+                placeholder="e.g. 1.5" />
+              <select id="field-unit" aria-label="Duration unit" class="select-input">
+                <option value="minutes">min</option>
+                <option value="hours" selected>hrs</option>
+              </select>
+            </div>
+            <span class="field-error" id="err-duration" role="alert" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="form-row two-col">
+          <div class="field-group">
+            <label for="field-tag">Tag <span aria-hidden="true">*</span></label>
+            <input type="text" id="field-tag" required list="tag-datalist"
+              aria-required="true" aria-describedby="err-tag"
+              placeholder="e.g. Study" />
+            <datalist id="tag-datalist"></datalist>
+            <span class="field-error" id="err-tag" role="alert" aria-live="polite"></span>
+          </div>
+          <div class="field-group">
+            <label for="field-time">Time (optional)</label>
+            <input type="text" id="field-time"
+              aria-describedby="err-time"
+              placeholder="HH:MM (24h)" />
+            <span class="field-error" id="err-time" role="alert" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field-group">
+            <label for="field-notes">Notes (optional)</label>
+            <textarea id="field-notes" rows="3" placeholder="Any extra details…" aria-describedby="err-notes"></textarea>
+            <span class="field-error" id="err-notes" role="alert" aria-live="polite"></span>
+            <span class="dup-warning hidden" id="dup-warning" role="alert">⚠️ Possible duplicate word detected in notes</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="submit-btn">Save Task</button>
+          <button type="button" class="btn btn-outline" id="cancel-edit-btn">Cancel</button>
+        </div>
+        <div id="form-status" role="status" aria-live="polite" class="form-status"></div>
+      </form>
+    </section>
+
+    <!-- ── SETTINGS ── -->
+    <section id="settings" class="page hidden" >
+      <div class="page-header">
+        <h1 id="settings-heading">Settings</h1>
+        <p class="subtitle">Customise your planner</p>
+      </div>
+
+      <div class="settings-grid">
+        <!-- Duration units -->
+        <div class="settings-card  " >
+          <h2 id="units-heading">Duration Units</h2>
+          <p>Choose how durations are displayed across the app.</p>
+          <fieldset>
+            <legend class="sr-only">Default duration unit</legend>
+            <label class="radio-label">
+              <input type="radio" name="default-unit" value="minutes" id="unit-min" />
+              Minutes
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="default-unit" value="hours" id="unit-hrs" checked />
+              Hours
+            </label>
+          </fieldset>
+          <div class="converter-box">
+            <h3>Quick Converter</h3>
+            <div class="converter-row">
+              <input type="number" id="conv-input" placeholder="60" min="0" aria-label="Duration value to convert" />
+              <select id="conv-from" aria-label="Convert from unit" class="select-input">
+                <option value="minutes">minutes</option>
+                <option value="hours">hours</option>
+              </select>
+              <span aria-hidden="true">→</span>
+              <select id="conv-to" aria-label="Convert to unit" class="select-input">
+                <option value="hours">hours</option>
+                <option value="minutes">minutes</option>
+              </select>
+            </div>
+            <p id="conv-result" class="conv-result" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <!-- Tag management -->
+        <div class="settings-card  " >
+          <h2 id="tags-heading">Manage Tags</h2>
+          <p>Tags available across the app. Default tags cannot be removed.</p>
+          <div id="tag-list" class="tag-list" role="list" aria-label="Tag list"></div>
+          <div class="add-tag-row">
+            <label for="new-tag-input" class="sr-only">New tag name</label>
+            <input type="text" id="new-tag-input" placeholder="New tag…" aria-describedby="err-new-tag" />
+            <button id="add-tag-btn" class="btn btn-primary" type="button">Add</button>
+          </div>
+          <span class="field-error" id="err-new-tag" role="alert" aria-live="polite"></span>
+        </div>
+
+        <!-- Data management -->
+        <div class="settings-card  " >
+          <h2 id="data-heading">Data Management</h2>
+          <div class="data-actions">
+            <button id="settings-export-btn" class="btn btn-outline">⬇ Export JSON</button>
+            <label for="settings-import-file" class="btn btn-outline import-label">
+              ⬆ Import JSON
+              <input type="file" id="settings-import-file" accept=".json" class="sr-only" aria-label="Import JSON data" />
+            </label>
+            <button id="settings-load-seed-btn" class="btn btn-outline">📥 Load Sample Data</button>
+            <button id="clear-data-btn" class="btn btn-danger">🗑 Clear All Data</button>
+          </div>
+          <p class="data-note">Export creates a valid JSON file. Import validates structure before loading. "Load Sample Data" merges demo records without overwriting existing ones.</p>
+        </div>
+
+        <!-- Theme -->
+        <div class="settings-card  " >
+          <h2 id="theme-heading">Appearance</h2>
+          <fieldset>
+            <legend class="sr-only">Colour theme</legend>
+            <label class="radio-label">
+              <input type="radio" name="theme" value="light" id="theme-light" />
+              ☀️ Light
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="theme" value="dark" id="theme-dark" checked />
+              🌙 Dark
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="theme" value="auto" id="theme-auto" />
+              🔄 System
+            </label>
+          </fieldset>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer role="contentinfo">
+    <p>Organizer © 2026 — Built for university students ·  HTML/CSS/JS</p>
+    <p>Summative_NDEKWE Dieu Merci</p>
+  </footer>
+
+  <!-- Mobile drawer backdrop -->
+  <div id="drawer-overlay" class="drawer-overlay hidden"></div>
+
+  <!-- Delete confirm modal — global -->
+  <div id="delete-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+    <div class="modal-box">
+      <h2 id="delete-modal-title">Delete Task?</h2>
+      <p id="delete-modal-desc">This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button id="confirm-delete-btn" class="btn btn-danger">Delete</button>
+        <button id="cancel-delete-btn" class="btn btn-outline">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARIA live regions -->
+  <div id="status-msg" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+  <div id="alert-msg" role="alert" aria-live="assertive" aria-atomic="true" class="sr-only"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
