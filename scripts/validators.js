@@ -1,22 +1,10 @@
 //  Regex Patterns 
 const RE_TITLE = /^\S(?:.*\S)?$/;
-
 const RE_DURATION = /^(0|[1-9]\d*)(\.\d{1,2})?$/;
-
-// 3. Date: YYYY-MM-DD strict
 const RE_DATE = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
-
-// 4. Tag: letters, spaces, hyphens; no leading/trailing hyphens or spaces
 const RE_TAG = /^[A-Za-z]+(?:[ -][A-Za-z]+)*$/;
-
-// 5. Time (optional): HH:MM 24-hour format — uses back-reference lookahead pattern
 const RE_TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
-
-// 6. ADVANCED — Duplicate word detection (back-reference) in notes
-//    Catches: "the the", "study study", etc.
 const RE_DUP_WORD = /\b(\w+)\s+\1\b/i;
-
-// 7. ADVANCED — Lookahead: tag must NOT start with a number (positive lookahead for letter)
 const RE_TAG_LOOKAHEAD = /^(?=[A-Za-z])/;
 
 //  Validators 

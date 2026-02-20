@@ -68,7 +68,7 @@ export function addTag(tag) {
 }
 
 export function removeTag(tag) {
-  if (DEFAULT_TAGS.includes(tag)) return false; // protect defaults
+  if (DEFAULT_TAGS.includes(tag)) return false;
   settings.tags = settings.tags.filter(t => t !== tag);
   saveSettings(settings);
   return true;
