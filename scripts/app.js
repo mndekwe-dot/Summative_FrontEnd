@@ -1,8 +1,8 @@
 // app.js — main controller
-import * as State from '../state.js';
-import * as UI from '../ui.js';
-import { filterRecords, sortRecords } from '../search.js';
-import { validateTitle, validateDuration, validateDate, validateTag, validateTime, checkDuplicateWord, validateImportRecord } from '../validators.js';
+import * as State from './state.js';
+import * as UI from './ui.js';
+import { filterRecords, sortRecords } from './search.js';
+import { validateTitle, validateDuration, validateDate, validateTag, validateTime, checkDuplicateWord, validateImportRecord } from './validators.js';
 
 // Load saved data from localStorage when the app starts
 State.init();

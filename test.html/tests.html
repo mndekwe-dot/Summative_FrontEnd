@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>CampusFlow — Tests</title>
+  <title>Organizer — Tests</title>
   <style>
     body { font-family: 'DM Sans', system-ui, sans-serif; background: #0d1117; color: #e6edf3; padding: 2rem; }
     h1 { font-size: 1.5rem; margin-bottom: 1rem; }
@@ -14,7 +14,7 @@
   </style>
 </head>
 <body>
-  <h1>🧪 CampusFlow — Test Suite</h1>
+  <h1>🧪 Organizer — Test Suite</h1>
   <div id="output"></div>
   <div id="summary"></div>
 
@@ -137,7 +137,7 @@
     // ── Summary ──────────────────────────────────────────────────
     const summary = document.getElementById('summary');
     summary.className = failed === 0 ? 'pass' : 'fail';
-    summary.textContent = `${passed + failed} tests — ✅ ${passed} passed · ❌ ${failed} failed`;
+    summary.textContent = `${passed + failed} tests —  ${passed} passed ·  ${failed} failed`;
   </script>
 </body>
 </html>
